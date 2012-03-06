@@ -1,11 +1,14 @@
 <?php
 
-class UserController extends Zend_Controller_Action
+class UserController extends Zend_Controller_Action implements App_Rest_Controller
 {
 
+    /**
+     * Stores the context switcher in a public var
+     */
     public function init()
     {
-        /* Initialize action controller here */
+        $this->contextSwitch = $this->_helper->getHelper('contextSwitch');
     }
 
     public function indexAction()
