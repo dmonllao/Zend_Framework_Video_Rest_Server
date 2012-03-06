@@ -10,16 +10,46 @@ class UserController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->view->action = 'index de user';
+         $this->getResponse()
+            ->appendBody("From indexAction() returning all articles");
     }
 
     public function getAction()
     {
-        // action body
+        $this->getResponse()
+            ->appendBody("From getAction() returning the requested article");
+
+    }
+
+    public function postAction()
+    {
+        $this->getResponse()
+            ->appendBody("From postAction() creating the requested article");
+
+    }
+
+    public function putAction()
+    {
+        $this->getResponse()
+            ->appendBody("From putAction() updating the requested article");
+
+    }
+
+    public function deleteAction()
+    {
+        $this->getResponse()
+            ->appendBody("From deleteAction() deleting the requested article");
+
     }
 
 
 }
+
+
+
+
+
+
 
 
 
