@@ -9,7 +9,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      *
      * @link http://framework.zend.com/manual/en/zend.controller.router.html#zend.controller.router.routes.rest
      */
-    protected function _initRestRoute() 
+    protected function _initRestRoute()
     {
         $this->bootstrap('frontController');
         $frontController = Zend_Controller_Front::getInstance();
@@ -21,7 +21,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initActionHelpers()
     {
 
-        // Allow actions to change it's context to json or xml
+        // Redirect the petition to one or another method depending on the HTTP method of the request
         $contexts = new App_Controller_Helper_RestContexts();
         Zend_Controller_Action_HelperBroker::addHelper($contexts);
     }
