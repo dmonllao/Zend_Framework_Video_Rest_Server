@@ -17,9 +17,19 @@ class UserController extends Zend_Controller_Action implements App_Rest_Controll
      */
     public function getAction()
     {
-        $this->getResponse()
-            ->appendBody("From getAction() returning the requested article\n");
+        // Received data
+        $data = $this->getRequest()->getParams();
 
+        $user = new Application_Model_DbTable_User();
+
+        if (!$user->get($data['id'])) {
+            $this->view->success = false;
+            $this->view->failedmessage = 'Wrong user';
+            return;
+        }
+
+        $this->view->success = true;
+        $this->view->user = $user->get();
     }
 
     /**
@@ -33,7 +43,7 @@ class UserController extends Zend_Controller_Action implements App_Rest_Controll
         // Data required not present
         if (!isset($data['email']) || !isset($data['password'])) {
             $this->view->success = false;
-            $this->view->failedmessage = 'Missing data';
+            $this->view->failedmessage = 'Missing data ';
             return;
         }
 

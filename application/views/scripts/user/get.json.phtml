@@ -1,0 +1,15 @@
+<?php
+
+// Returning the user
+if ($this->success) {
+
+    unset($this->user->password);
+    echo $this->json($this->user);
+    return;
+
+// Failed
+} else {
+
+    echo $this->json('Error: ' . $this->failedmessage);
+    return;
+}

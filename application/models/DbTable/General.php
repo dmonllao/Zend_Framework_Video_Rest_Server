@@ -52,7 +52,7 @@ class Application_Model_DbTable_General extends Zend_Db_Table_Abstract
 
     	// Filtering by a UNIQUE KEY (only the first one)
     	if (is_array($filter)) {
-    		$value = reset($filter);
+    		$value = addslashes(reset($filter));
     		$key = key($filter);
 
         // Getting it from $this
@@ -64,7 +64,6 @@ class Application_Model_DbTable_General extends Zend_Db_Table_Abstract
     		$value = (int)$filter;
     	}
 
-    	$value = addslashes($value);
         $row = $this->fetchRow($key . " = '" . $value . "'");
         if (!$row) {
         	return false;
