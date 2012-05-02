@@ -1,0 +1,24 @@
+<?php
+
+// Returning the user
+if ($this->success) {
+
+    unset($this->video->filename);
+
+    // The object URL to reference it according to REST responses standards
+    $url = $this->url(array(
+        'controller' => 'Video',
+        'id'         => $this->video->id
+    ));
+
+    // The user itself
+    echo $this->json($this->video);
+
+    return;
+
+// Failed
+} else {
+
+    echo $this->json('Error: ' . $this->failedmessage);
+    return;
+}

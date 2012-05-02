@@ -80,7 +80,48 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
     public function putAction()
     {
-        // action body
+
+        $data = $this->getRequest()->getParams();
+
+        // Data required not present
+        if (!isset($data['id']) || !isset($data['userid']) || !isset($data['name'])) {
+            $this->view->success = false;
+            $this->view->failedmessage = 'Missing data';
+            return;
+        }
+
+        // Check if the user exists
+        $user = new Application_Model_DbTable_User();
+        if (!$user->get($data['userid'])) {
+            $this->view->success = false;
+            $this->view->failuremessage = 'The specified user does not exists';
+            return;
+        }
+
+        // Update into DB
+        $video = new Application_Model_DbTable_Video();
+        if (!$video->get($data['id'])) {
+            $this->view->success = false;
+            $this->view->failuremessage = 'The specified video does not exists';
+            return;
+        }
+
+        // Check the video owner
+        if ($data['userid'] != $video->userid) {
+            $this->view->success = false;
+            $this->view->failuremessage = 'Not owner';
+            return;
+        }
+
+        // Update all the submitted values
+        foreach ($data as $key => $value) {
+            $video->{$key} = $value;
+        }
+
+        $video->save();
+
+        $this->view->success = true;
+        $this->view->video = $video->get();
     }
 
 
