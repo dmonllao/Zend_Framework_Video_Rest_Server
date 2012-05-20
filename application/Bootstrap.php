@@ -17,7 +17,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $frontController->getRouter()->addRoute('default', $restRoute);
     }
 
+    /**
+     * Adds the application.ini settings to the registry
+     */
+    protected function _initConfig()
+    {
+        $config = new Zend_Config($this->getOptions());
+        Zend_Registry::set('config', $config);
+        return $config;
+    }
 
+    /**
+     * Loads all the controller helpers
+     */
     protected function _initActionHelpers()
     {
 

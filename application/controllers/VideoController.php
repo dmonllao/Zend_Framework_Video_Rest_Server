@@ -27,11 +27,7 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         $this->view->success = true;
         $this->view->video = $video->get();
-
-        // Video HTML
         $this->view->video->html = $this->getVideoHTML($video);
-
-        // Video URL
         $this->view->video->url = $this->getVideoURL($video);
     }
 
@@ -57,7 +53,7 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
         // Store the video into the filesystem
         $config = Zend_Registry::get("config");
         $videoname = $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.flv';
-        $filename = $config["app"]["videospath"] . '/' . $videoname;
+        $filename = $config->app->videospath . '/' . $videoname;
         if (file_exists($filename)) {
             $this->view->success = false;
             $this->view->failedmessage = 'Existing video file';
@@ -94,6 +90,8 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         $this->view->success = true;
         $this->view->video = $video->get();
+        $this->view->video->html = $this->getVideoHTML($video);
+        $this->view->video->url = $this->getVideoURL($video);
     }
 
     public function putAction()
@@ -153,7 +151,7 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
     {
 
         $videourl = $this->view->ServerUrl() . '/videos/' . $video->filename;
-        $html = '<video width="320" height="240" controls="controls">
+        $html = '<video controls="controls">
             <source src="' . $videourl . '" type="video/mp4" />
             Your browser does not support the video tag.
             </video>';
