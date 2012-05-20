@@ -55,9 +55,9 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
         }
 
         // Store the video into the filesystem
-        $config->videospath = '/var/www/videos';
+        $config = Zend_Registry::get("config");
         $videoname = $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.flv';
-        $filename = $config->videospath . '/' . $videoname;
+        $filename = $config["app"]["videospath"] . '/' . $videoname;
         if (file_exists($filename)) {
             $this->view->success = false;
             $this->view->failedmessage = 'Existing video file';
