@@ -15,7 +15,24 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
     public function getAction()
     {
-        // action body
+
+        $data = $this->getRequest()->getParams();
+
+        $video = new Application_Model_DbTable_Video();
+        if (!$video->get($data['id'])) {
+            $this->view->success = false;
+            $this->view->failuremessage = 'The specified video does not exists';
+            return;
+        }
+
+        $this->view->success = true;
+        $this->view->video = $video->get();
+
+        // Video HTML
+        $this->view->video->html = $this->getVideoHTML($video);
+
+        // Video URL
+        $this->view->video->url = $this->getVideoURL($video);
     }
 
     public function postAction()
@@ -39,7 +56,8 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         // Store the video into the filesystem
         $config->videospath = '/var/www/videos';
-        $filename = $config->videospath . '/' . $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.flv';
+        $videoname = $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.flv';
+        $filename = $config->videospath . '/' . $videoname;
         if (file_exists($filename)) {
             $this->view->success = false;
             $this->view->failedmessage = 'Existing video file';
@@ -70,7 +88,7 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
         $video = new Application_Model_DbTable_Video();
         $video->userid = $user->id;
         $video->name = "";        // We will assign the name later
-        $video->filename = $filename;
+        $video->filename = $videoname;
         $video->timecreated = time();
         $video->save();
 
@@ -122,14 +140,36 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         $this->view->success = true;
         $this->view->video = $video->get();
+        $this->view->video->html = $this->getVideoHTML($video);
+        $this->view->video->url = $this->getVideoURL($video);
+    }
+
+    /**
+     * Returns the HTML to display the video
+     * @param Application_Model_DbTable_Video $video
+     * @return string
+     */
+    private function getVideoHTML(Application_Model_DbTable_Video $video)
+    {
+
+        $videourl = $this->view->ServerUrl() . '/videos/' . $video->filename;
+        $html = '<video width="320" height="240" controls="controls">
+            <source src="' . $videourl . '" type="video/mp4" />
+            Your browser does not support the video tag.
+            </video>';
+        return $html;
     }
 
 
+    /**
+     * Returns the video URL
+     * @param Application_Model_DbTable_Video $video
+     * @return string
+     */
+    private function getVideoURL(Application_Model_DbTable_Video $video)
+    {
+
+        $urlparams = array('controller' => 'Video', 'id' => $video->id);
+        return $this->view->ServerUrl() . $this->view->url($urlparams);
+    }
 }
-
-
-
-
-
-
-

@@ -3,8 +3,7 @@
 // Returning the video HTML
 if ($this->success) {
 
-    echo '<h1>' . $this->video->name . '</h1>';
-    echo $this->video->html;
+    echo $this->json($this->video);
     return;
 
 // Failed
