@@ -1,15 +1,5 @@
 <?php
 
 // Returning the video HTML
-if ($this->success) {
-
-    echo '<h1>' . $this->video->name . '</h1>';
-    echo $this->video->html;
-    return;
-
-// Failed
-} else {
-
-    echo $this->json('Error: ' . $this->failedmessage);
-    return;
-}
+echo '<h1>' . $this->video->name . '</h1>';
+echo $this->video->html;

@@ -20,12 +20,9 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         $video = new Application_Model_DbTable_Video();
         if (!$video->get($data['id'])) {
-            $this->view->success = false;
-            $this->view->failuremessage = 'The specified video does not exists';
-            return;
+            die('No video found');
         }
 
-        $this->view->success = true;
         $this->view->video = $video->get();
         $this->view->video->html = $this->getVideoHTML($video);
         $this->view->video->url = $this->getVideoURL($video);
@@ -52,7 +49,7 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         // Store the video into the filesystem
         $config = Zend_Registry::get("config");
-        $videoname = $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.flv';
+        $videoname = $user->id . '_' . rand(1000, 9999) . '_' .date('Ymd_H:i:s'). '.mp4';
         $filename = $config->app->videospath . '/' . $videoname;
         if (file_exists($filename)) {
             $this->view->success = false;
@@ -151,10 +148,24 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
     {
 
         $videourl = $this->view->ServerUrl() . '/videos/' . $video->filename;
-        $html = '<video controls="controls">
-            <source src="' . $videourl . '" type="video/mp4" />
-            Your browser does not support the video tag.
-            </video>';
+        $publicpath = $this->view->ServerUrl() . $this->view->baseUrl();
+
+        // Links to the required javascript
+        $html = '<code><script src="'.$publicpath.'/player/jquery.js"></script>
+        <script src="'.$publicpath.'/player/mediaelement-and-player.min.js"></script>
+        <link rel="stylesheet" href="'.$publicpath.'/player/mediaelementplayer.min.css" /></code>';
+
+        $html .= '<video width="320" height="240" controls="controls" preload="none">
+        <source src="'.$videourl.'" type=\'video/mp4; codecs="avc1.42E01E, mp4a.40.2"\' />
+        <object width="320" height="240" type="application/x-shockwave-flash" data="'.$publicpath.'/player/flashmediaelement.swf">
+          <param name="movie" value="'.$publicpath.'/player/flashmediaelement.swf" />
+          <param name="flashvars" value="controls=true&file='.$videourl.'" />
+          No video playback capabilities
+        </object>
+        </video>';
+
+        $html .= '<script>$(\'video,audio\').mediaelementplayer(/* Options */);</script>';
+
         return $html;
     }
 
