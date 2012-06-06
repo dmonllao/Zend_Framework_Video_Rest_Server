@@ -20,7 +20,9 @@ class VideoController extends Zend_Controller_Action implements App_Rest_Control
 
         $video = new Application_Model_DbTable_Video();
         if (!$video->get($data['id'])) {
-            die('No video found');
+            $this->view->success = false;
+            $this->view->failuremessage = 'The specified video does not exists';
+            return;
         }
 
         $this->view->video = $video->get();
